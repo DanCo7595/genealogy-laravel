@@ -64,3 +64,24 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+# Schéma de la base de données
+
+Le schéma de la base de données est disponible sur dbdiagram.io :
+[Voir le schéma](https://dbdiagram.io/d/ocd_test_genealogie-67ad55f8263d6cf9a0fa2eeb)
+
+# Évolution des données dans notre système de validation communautaire
+
+## Propositions et Validation des Modifications
+
+### Propositions de modifications sur les fiches personnes
+- **Insertion :** Lorsqu'un utilisateur souhaite modifier une fiche, une entrée est créée dans la table `modifications` avec le champ concerné, la nouvelle valeur, et un statut initial de `pending`.
+- **Votes :** Les autres utilisateurs peuvent voter sur cette proposition via la table `modification_votes`.
+- **Validation :** Si 3 votes "accept" sont reçus, la modification est appliquée à la fiche dans la table `people` et le statut passe à `approved`. Si 3 votes "reject" sont reçus, la proposition est rejetée (`rejected`).
+
+### Propositions d'ajout de relations
+- **Insertion :** Lorsqu'un utilisateur propose d'ajouter une relation de parenté, une entrée est créée dans la table `proposed_relationships` avec les identifiants des fiches concernées, l'identifiant du proposeur, et un statut `pending`.
+- **Votes :** Les votes (acceptation ou rejet) sont enregistrés dans la table `votes`.
+- **Validation :** Dès que 3 votes "accept" sont collectés, le statut passe à `approved` et la relation est ajoutée à la table `relationships`. En cas de 3 votes "reject", la proposition est rejetée.
+
+Ce système permet de garantir que les modifications et relations ne sont validées qu'après approbation d'au moins 3 membres de la communauté, assurant ainsi la fiabilité et la qualité des données.
